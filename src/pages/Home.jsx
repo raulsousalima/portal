@@ -6,8 +6,10 @@ import EmployeeModal from '../components/employees/EmployeeModal';
 import TeamCard from '../components/teams/TeamCard';
 import { getEmployees, getTeams, deleteEmployee } from '../lib/employeeService';
 import { LEVELS, TEAMS } from '../lib/utils';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
+  const { isGuest } = useAuth();
   const [tab, setTab] = useState('employees'); // 'employees' | 'teams'
   const [employees, setEmployees] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -90,7 +92,7 @@ export default function HomePage() {
               </button>
             </div>
 
-            {tab === 'employees' && (
+            {tab === 'employees' && !isGuest && (
               <button
                 id="btn-add-employee"
                 className="btn btn-primary"
@@ -162,7 +164,7 @@ export default function HomePage() {
                   ? 'Tente ajustar os filtros ou a busca.'
                   : 'Cadastre o primeiro colaborador clicando em "Novo Colaborador".'}
               </p>
-              {!search && !filterTeam && !filterLevel && (
+              {!search && !filterTeam && !filterLevel && !isGuest && (
                 <button className="btn btn-primary" onClick={() => setModalOpen(true)} style={{ marginTop: '8px' }}>
                   <Plus size={15} /> Novo Colaborador
                 </button>

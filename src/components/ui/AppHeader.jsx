@@ -7,12 +7,12 @@ import Avatar from '../ui/Avatar';
 import toast from 'react-hot-toast';
 
 export default function AppHeader({ onSearch }) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isGuest, exitGuest } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const name = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário';
+  const name = isGuest ? 'Visitante' : (user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário');
 
   // Fechar menu ao clicar fora
   useEffect(() => {
@@ -26,6 +26,11 @@ export default function AppHeader({ onSearch }) {
   }, []);
 
   async function handleSignOut() {
+    if (isGuest) {
+      exitGuest();
+      navigate('/auth/login');
+      return;
+    }
     try {
       await signOut();
       navigate('/auth/login');
@@ -86,21 +91,25 @@ export default function AppHeader({ onSearch }) {
           <div className="user-menu-dropdown">
             <div className="user-menu-info">
               <div className="user-menu-info-name">{name}</div>
-              <div className="user-menu-info-email">{user?.email}</div>
+              <div className="user-menu-info-email">{isGuest ? 'Modo visitante' : user?.email}</div>
             </div>
 
-            <button
-              className="user-menu-item"
-              onClick={() => { navigate('/profile'); setMenuOpen(false); }}
-            >
-              <User size={15} /> Meu Perfil
-            </button>
-            <button
-              className="user-menu-item"
-              onClick={() => { navigate('/profile?section=password'); setMenuOpen(false); }}
-            >
-              <Lock size={15} /> Alterar Senha
-            </button>
+            {!isGuest && (
+              <>
+                <button
+                  className="user-menu-item"
+                  onClick={() => { navigate('/profile'); setMenuOpen(false); }}
+                >
+                  <User size={15} /> Meu Perfil
+                </button>
+                <button
+                  className="user-menu-item"
+                  onClick={() => { navigate('/profile?section=password'); setMenuOpen(false); }}
+                >
+                  <Lock size={15} /> Alterar Senha
+                </button>
+              </>
+            )}
             <button className="user-menu-item danger" onClick={handleSignOut}>
               <LogOut size={15} /> Sair
             </button>

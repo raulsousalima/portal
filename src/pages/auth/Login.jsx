@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
-  const { signIn } = useAuth();
+  const { signIn, enterAsGuest } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -129,6 +129,16 @@ export default function LoginPage() {
               Entrar
             </button>
           </form>
+
+          <div style={{ margin: '4px 0' }}>
+            <button
+              type="button"
+              className="btn btn-outline btn-lg w-full"
+              onClick={() => { enterAsGuest(); navigate('/home'); }}
+            >
+              Entrar como Visitante
+            </button>
+          </div>
 
           <div className="auth-form-footer">
             Não tem conta?{' '}

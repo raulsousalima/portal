@@ -7,11 +7,13 @@ import EmployeeModal from '../components/employees/EmployeeModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { getEmployee, deleteEmployee } from '../lib/employeeService';
 import { levelClass, teamClass } from '../lib/utils';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function EmployeeDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isGuest } = useAuth();
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
@@ -97,22 +99,24 @@ export default function EmployeeDetailPage() {
                     </span>
                   )}
                 </div>
-                <div className="detail-actions">
-                  <button
-                    id="btn-edit-employee"
-                    className="btn btn-outline"
-                    onClick={() => setEditOpen(true)}
-                  >
-                    <Pencil size={14} /> Editar
-                  </button>
-                  <button
-                    id="btn-delete-employee"
-                    className="btn btn-danger"
-                    onClick={() => setConfirmOpen(true)}
-                  >
-                    <Trash2 size={14} /> Excluir
-                  </button>
-                </div>
+                {!isGuest && (
+                  <div className="detail-actions">
+                    <button
+                      id="btn-edit-employee"
+                      className="btn btn-outline"
+                      onClick={() => setEditOpen(true)}
+                    >
+                      <Pencil size={14} /> Editar
+                    </button>
+                    <button
+                      id="btn-delete-employee"
+                      className="btn btn-danger"
+                      onClick={() => setConfirmOpen(true)}
+                    >
+                      <Trash2 size={14} /> Excluir
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
